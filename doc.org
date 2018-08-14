@@ -1,0 +1,25 @@
+#+TITLE: DOC FOR ANN
+#+AUTHOR: Huaizhi
+#+DATE: <2018-06-04 Mon> 
+
+* 检测人脸并将人脸用pickle dump到一个文件里面
+** ls Face/*.jpg > images_names.txt  # get all image paths
+** python build.py --image_files=images_names.txt  # detect faces and save to a file: mats.dat
+
+* 构建数据库： 运行facenet，将得到的所有向量dump到一文件里面
+** python halo.py  # load faces and running facenet, dump vectors into file: vector_embs.dat
+** 或者python construct.py也是一样的
+   
+* 构建ANN树： 调用annoy库的build函数
+** 首先load vector_embs.dat, 将所有的vector添加到AnnoyIndex对象: v 中
+** 调用build函数: v.build(n) (n 表示树的棵数)
+** python establish_ann.py
+
+* TEST
+** python search.py --image=path/to/your/image  # 输入一张图片， 返回最靠近的10个向量的索引(results) 和 具体向量(query_vectors)
+** NOTE: 你可能想要原来人脸的名字， 可以在创建数据库的时候同时保留名字列表。
+
+* PS:
+** 检索的所有代码在： /home/cst/test_hello/facenet/src/retrieve (注意： 运行时请在src目录下进行，否则模型路径会有问题)
+** 人脸1 vs 1 的代码在/home/cst/test_hello/facenet/src下， 请查看 bb_1_vs_1_verify.py
+** python bb_1_vs_1_verify image1 image2
